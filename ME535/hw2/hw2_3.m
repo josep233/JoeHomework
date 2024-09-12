@@ -42,11 +42,10 @@ time_first_maximum_xdot_dot = time_at_first_zero + tau / 4;
 hold on
 plot(t,func,'blue')
 plot(t,func_prime,'red')
-plot(t,func_prime_prime,'green')
 yline(0)
 xlabel('time (s)')
 ylabel('x (mm)')
-legend(["${x}$","${\dot{x}}$","${\ddot{x}}$"],'interpreter',['latex'],'location','northwest')
+legend(["${x}$","${\dot{x}}$"],'interpreter',['latex'],'location','northwest','FontSize',12)
 
 %part A
 disp("x(0) = "+func(1)+" mm")
