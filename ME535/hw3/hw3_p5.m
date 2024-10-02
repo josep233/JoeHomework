@@ -7,7 +7,7 @@ close all
 L = 2e-2;
 m = 3e-3;
 kappa = 20;
-damping_ratio = 0.0;
+damping_ratio = 0.02;
 angle_deg = 30;
 F0 = kappa * deg2rad(angle_deg) / L;
 q_0 = deg2rad(angle_deg);
@@ -15,7 +15,7 @@ q_dot_0 = 0;
 natural_frequency = sqrt(kappa / m);
 damped_frequency = natural_frequency * sqrt(1 - damping_ratio^2);
 damped_period = 2 * pi / damped_frequency;
-T = 2.5 * damped_period;
+T = 3 * damped_period;
 c = damping_ratio * 2 * sqrt(kappa*m);
 
 ts = linspace(0,10*T,725);

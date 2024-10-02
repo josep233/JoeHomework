@@ -4,7 +4,7 @@ close all
 
 F = 1;
 r = linspace(0,2,100);
-damping_ratio = 0.02;
+damping_ratio = 0.1; %can also change this to 0.02
 X = F ./ (1 + 2 .* 1i .* damping_ratio .* r - r.^2);
 
 amplitude = abs(X);

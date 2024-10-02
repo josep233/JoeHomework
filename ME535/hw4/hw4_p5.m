@@ -22,3 +22,8 @@ F = (-A * 1i - mu * 1i * omega * X / (1i * omega * mu - m2 * omega^2)) * (1i * o
 
 disp("magnitude of F for frequency = 85 rad/s: "+abs(F)+" N")
 disp("phase of F for frequency = 85 rad/s: "+(atan(imag(F)/real(F))+(pi/2))+" rad")
+
+% magnitude of F for frequency = 75 rad/s: 104.8818 N
+% phase of F for frequency = 75 rad/s: 3.1322 rad
+% magnitude of F for frequency = 85 rad/s: 152.6335 N
+% phase of F for frequency = 85 rad/s: 3.1351 rad

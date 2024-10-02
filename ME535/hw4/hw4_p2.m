@@ -31,6 +31,8 @@ best_frequency = force_frequency(maxindex);
 
 plot(force_frequency,max_response)
 
-%part a
 disp("frequency to cause maximum displacement: "+string(best_frequency)+" rad/s"+"("+(2*pi/best_frequency)+" Hz)")
 disp("displacement at this frequency: "+100*maxresponse+" cm")
+
+% frequency to cause maximum displacement: 3.2957 rad/s(1.9065 Hz)
+% displacement at this frequency: 6.165 cm

@@ -49,3 +49,6 @@ legend(["${\omega = 1 kHz}$","${\omega = 0.95 kHz}$","${\omega = 1.05 kHz}$"],'i
 disp("amplitude at 0.95 kHz: "+amp_95+" m")
 disp("amplitude at 1.05 kHz: "+amp_105+" m")
 
+% amplitude at 0.95 kHz: 3.1173e-05 m
+% amplitude at 1.05 kHz: 2.9652e-05 m
+
