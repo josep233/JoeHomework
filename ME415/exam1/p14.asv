@@ -1,0 +1,11 @@
+clear
+clc
+close all
+
+span = 2;
+aspect_ratio = 8;
+thickness_to_chord = 0.12;
+flight_speed = 20;
+kinematic_viscosity = 1e-5;
+
+Re = kinematic_viscosity^(-1) * flight_speed * 
