@@ -7,16 +7,23 @@ dr = linspace(0,1,100);
 for i = 1:length(dr)
     m = 1;
     natural_frequency = 5 * 2 * pi;
+<<<<<<< Updated upstream
     k = (natural_frequency^2);
     v = 4;
     g = 9.81;
     % g = 0;
+=======
+    k = (natural_frequency^2) * m;
+    v = -4;
+    g = 9.81;
+>>>>>>> Stashed changes
     damping_ratio = dr(i);
     c = damping_ratio * 2 * sqrt(k*m);
-    t = linspace(0,2,300);
+    t = linspace(0,2,100);
     z_0 = 0;
     z_dot_0 = v;
     
+<<<<<<< Updated upstream
     % z_func = @(t) exp(-damping_ratio * natural_frequency * t) + (v/(natural_frequency * sqrt(1 - damping_ratio^2))) * sin(natural_frequency * sqrt(1 - damping_ratio^2) * t);
     
     z_ana = exp(-damping_ratio .* natural_frequency .* t) .* (v./(natural_frequency .* sqrt(1 - damping_ratio.^2))) .* sin(natural_frequency .* sqrt(1 - damping_ratio.^2) .* t);
@@ -29,6 +36,20 @@ for i = 1:length(dr)
     % plot(tout,yout(:,1),'red')
     % ylabel('z (m)','interpreter','latex')
     % xlabel('time (s)','interpreter','latex')
+=======
+    z_func = @(t) exp(-damping_ratio * natural_frequency * t) .* (v/(natural_frequency * sqrt(1 - damping_ratio^2))) * sin(natural_frequency * sqrt(1 - damping_ratio^2) * t);
+    
+    z = exp(-damping_ratio .* natural_frequency .* t) .* (v./(natural_frequency .* sqrt(1 - damping_ratio.^2))) .* sin(natural_frequency .* sqrt(1 - damping_ratio.^2) .* t);
+
+    hold on
+    % plot(t,z)
+    
+    [tout,yout] = ode45(@(t, z) eom_2_12(z, m, k, c, g), [t(1),t(end)],[z_0; z_dot_0]);
+    
+    % plot(tout,yout(:,1))
+    ylabel('z (m)','interpreter','latex')
+    xlabel('time (s)','interpreter','latex')
+>>>>>>> Stashed changes
     
     sum_force = (yout(:,2) * c + k * yout(:,1));
     sum_force_abs = abs(sum_force);
@@ -37,7 +58,10 @@ for i = 1:length(dr)
     % hold on
     % plot(tout,sum_force)
     % pause;
+<<<<<<< Updated upstream
     % close all
+=======
+>>>>>>> Stashed changes
 end
 
 [minimum, idx] = min(max_abs_force);

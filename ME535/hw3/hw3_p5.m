@@ -12,16 +12,21 @@ angle_deg = 30;
 F0 = kappa * deg2rad(angle_deg) / L;
 q_0 = deg2rad(angle_deg);
 q_dot_0 = 0;
-natural_frequency = sqrt(kappa / m);
+natural_frequency = sqrt(kappa / ((1/3)*m*L^2));
 damped_frequency = natural_frequency * sqrt(1 - damping_ratio^2);
 damped_period = 2 * pi / damped_frequency;
+<<<<<<< Updated upstream
 T = 3 * damped_period;
 c = damping_ratio * 2 * sqrt(kappa*m);
+=======
+T = 2.5 * damped_period;
+c = damping_ratio * 2 * sqrt(kappa*(1/3)*m*L^2);
+>>>>>>> Stashed changes
 
 ts = linspace(0,10*T,725);
 % ts = linspace(0,0.1,100);
 
-step_solution = @(t) (1./(m.*natural_frequency.^2)) .* (1 - exp(-damping_ratio .* natural_frequency .* t) .* cos(damped_frequency .* t) + (damping_ratio .* natural_frequency ./ damped_frequency) .* sin(damped_frequency .* t));
+step_solution = @(t) ((1./(m.*natural_frequency.^2)) .* (1 - exp(-damping_ratio .* natural_frequency .* t) .* cos(damped_frequency .* t) + (damping_ratio .* natural_frequency ./ damped_frequency) .* sin(damped_frequency .* t)))/((1/3)*L^2);
 
 q_analytic = exp(-damping_ratio .* natural_frequency .* ts) .* (q_0 .* cos(damped_frequency .* ts) + (q_dot_0 + damping_ratio .* natural_frequency .* q_0 ./ damped_frequency) .* sin(damped_frequency .* ts));
 q_f_analytic = F0 .* (step_solution(ts) .* heaviside(ts) - step_solution(ts - T) .* heaviside(ts - T));
@@ -41,6 +46,6 @@ function [theta_dot] = eom_2_12(t, theta, L, m, kappa, damping_ratio, F0, natura
     
     % Equations of Motion
     theta_dot(1,1) = theta(2);
-    % theta_dot(2,1) = ((1/3) * m * L^2)^(-1) * (F - c * theta(2) - kappa * theta(1));
-    theta_dot(2,1) = (1/m) * (F - c * theta(2) - kappa * theta(1));
+    theta_dot(2,1) = ((1/3) * m * L^2)^(-1) * (F - c * theta(2) - kappa * theta(1));
+    % theta_dot(2,1) = (1/m) * (F - c * theta(2) - kappa * theta(1));
 end
