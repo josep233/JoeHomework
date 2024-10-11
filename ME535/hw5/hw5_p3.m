@@ -14,10 +14,11 @@ delta_s = m * g / k;
 natural_frequency = sqrt(k/m);
 
 
-sigma_a = rho * L * g;
+max_stress_a = rho * L * g;
 
 amplitude_b = (L * m * g / (2 * E * A)) - (m * natural_frequency^2)^(-1);
-max_deflection_b = amplitude_b + (m * natural_frequency^2)^(-1);
+max_deflection_b = amplitude_b + (m * natural_frequency^2)^(-1) + m * g / k;
+max_stress_b = k * max_deflection_b / A;
 
 amplitude_c = abs((L * m * g / (2 * E * A)) - (sqrt(2 * 9.8 * 0.5)/natural_frequency)*1i - (m * natural_frequency^2)^(-1));
 max_deflection_c = amplitude_c + (m * natural_frequency^2)^(-1);
