@@ -22,7 +22,7 @@ new_frequency = linspace(0,60*pi,1000);
 X = force_amplitude ./ (-new_frequency.^2 .* m + k + 1i .* new_frequency .* 2 .* damping_ratio .* sqrt(k.*m));
 
 amplitude = abs(X);
-max(amplitude)
+partbmax = max(amplitude);
 
 mnew = m + linspace(0,10000,1000);
 knew = natural_frequency^2 .* mnew;
@@ -37,5 +37,10 @@ hold on
 plot(mnew,max_amplitude)
 yline(0.01)
 
-knew(end)
-mnew(end)
+disp("(part a) required stiffness for 2kN force: "+k+" N/m")
+disp("(part b) max amplitude at startup: "+partbmax+" m")
+disp("(part c) required extra mass for 10 mm amplitude: "+(mnew(end) - m)+" kg")
+
+% (part a) required stiffness for 2kN force: 1428000 N/m
+% (part b) max amplitude at startup: 0.23341 m
+% (part c) required extra mass for 10 mm amplitude: 10000 kg
