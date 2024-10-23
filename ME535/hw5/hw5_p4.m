@@ -35,11 +35,11 @@ disp1 = y(:,1);
 disp2 = y(:,2) - y(:,1);
 disp3 = y(:,3) - y(:,2);
 
-hold on
-plot(t(:,1),disp1)
-plot(t(:,1),disp2)
-plot(t(:,1),disp3)
-legend()
+% hold on
+% plot(t(:,1),disp1)
+% plot(t(:,1),disp2)
+% plot(t(:,1),disp3)
+% legend()
 
 maxdisp1 = min((disp1(t < 0.35e-3)));
 maxdisp2 = max(abs(disp2(t < 0.35e-3)));
@@ -48,10 +48,15 @@ maxdisp3 = max(abs(disp3(t < 0.35e-3)));
 maxstress1 = 2*k * maxdisp1 / A;
 maxstress2 = k * maxdisp2 / A;
 maxstress3 = k * maxdisp3 / A;
+totalmaxstress = max(abs([maxstress1,maxstress2,maxstress3]));
 
 amplitude_c = abs((L * m * g / (2 * E * A)) - (sqrt(2 * 9.8 * 0.5)/natural_frequency)*1i - (m * natural_frequency^2)^(-1));
 max_deflection_c = amplitude_c + (m * natural_frequency^2)^(-1);
 max_stress_c = k * max_deflection_c / A;
+
+disp("max stress in bar: "+totalmaxstress+" Pa")
+
+% max stress in bar: 264069002.9599 Pa
 
 function dydt = dynamics(t, y, M, K, f)
     n = size(M, 1);
