@@ -21,3 +21,4 @@ natural_frequencies = [sqrt(values(1,1)), sqrt(values(2,2)), sqrt(values(3,3))];
 eigenvectors1 = vectors(:,1) / vectors(1,1);
 eigenvectors2 = vectors(:,2) / vectors(1,2);
 eigenvectors3 = vectors(:,3) / vectors(1,3);
+
