@@ -1,8 +1,0 @@
-clear
-clc
-close all
-
-AR = 6;
-taper_ratio = 0.3;
-
-2*pi/()
