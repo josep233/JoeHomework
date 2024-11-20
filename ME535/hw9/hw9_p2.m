@@ -34,5 +34,6 @@ for i = 1:length(force_frequencies)
 end
 
 hold on
-plot(force_frequencies,abs(X))
+% plot(force_frequencies,abs(X))
+plot(force_frequencies,atan2(imag(X),real(X)))
 xline(omegacart)
