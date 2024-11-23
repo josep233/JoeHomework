@@ -7,19 +7,22 @@ t = 7e-6;
 E = 170E9;
 rho = 2300;
 w = 10e-6;
-h = 7e-6;
+h = 2e-6;
 omega1 = 11.6e3 * 2 * pi;
 omega2 = 18.8e3 * 2 * pi;
 natural_frequencies = [omega1, omega2];
 zeta = [0.001; 0.001];
 F = [0;1];
+L = 251e-6;
+k=3*E*(w*h^3/12)/L^3;
 
 m = a^2 * t * rho;
-kappa = sqrt(1/12) * t;
-Ig = m * kappa^2;
+% kappa = sqrt(1/12) * t;
+Ig = (1/12) * m * a^2;
 
 M = [(Ig / a^2) + (1 / 4) * m, (1 / 4) * m - (Ig / a^2); (1 / 4) * m - (Ig / a^2), (Ig / a^2) + (1 / 4) * m];
 K = [(E * w * h^3) / (2), 0; 0, (E * w * h^3) / (2)];
+K = [2*k, 0; 0, 2*k];
 
 [vectors, values] = eig(K,M);
 
@@ -41,21 +44,29 @@ for i = 1:height(K)
     end
 end
 
+fn=sqrt(diag(lambda))/2/pi;
+C=M*Phi*diag(2*(fn*2*pi).*zeta).*Phi.'*M;
+for k=1:length(list_frequencies)
+H(:,k)=(K+1i*list_frequencies(k)*C-list_frequencies(k)^2*M)\F;
+end
 X = Phi * Y;
 
-figure(1)
-plot(list_frequencies,abs(Y))
-xline(natural_frequencies)
-xlabel('frequency')
-ylabel('amplitude')
-title('amplitude')
+semilogy(list_frequencies/2/pi,abs(H)); xlabel('Frequency (Hz)');
+legend('H_1(\omega)','H_2(\omega)');
 
-figure(2)
-plot(list_frequencies,atan2(imag(X),real(X)))
-xline(natural_frequencies)
-xlabel('frequency')
-ylabel('phase')
-title('phase')
+% figure(1)
+% semilogy(list_frequencies./(2*pi),abs(H))
+% xline(natural_frequencies)
+% xlabel('frequency')
+% ylabel('amplitude')
+% title('amplitude')
+
+% figure(2)
+% semilogy(list_frequencies,atan2(imag(X),real(X)))
+% xline(natural_frequencies)
+% xlabel('frequency')
+% ylabel('phase')
+% title('phase')
 
 
 % norm_vector1 = vectors(:,1) / sqrt(transpose(vectors(:,1)) * M * vectors(:,1));

@@ -60,10 +60,10 @@ end
 
 Q = Phi * ETA;
 
-plot(t,Q(1,:))
+plot(t,ETA(3,:))
 
 tau1 = 110;
 tau2 = 32;
 tau3 = 7;
 
-tau = ((1)./(zeta .* natural_frequencies));
+tau = ((4)./(zeta .* natural_frequencies));
