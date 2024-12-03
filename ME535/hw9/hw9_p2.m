@@ -33,7 +33,13 @@ for i = 1:length(force_frequencies)
     X(i,:) = (K + 1i * force_frequencies(i) * C - force_frequencies(i)^2 * M)^(-1) * F;
 end
 
+other = sqrt(k/m2);
+
 hold on
-% plot(force_frequencies,abs(X))
-plot(force_frequencies,atan2(imag(X),real(X)))
+plot(force_frequencies,abs(X))
+% plot(force_frequencies,atan2(imag(X),real(X)))
 xline(omegacart)
+xlabel('force frequency')
+ylabel('transfer function')
+legend(["\theta/F","x/F",""])
+title('P2')

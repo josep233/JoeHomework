@@ -60,7 +60,14 @@ end
 
 Q = Phi * ETA;
 
+<<<<<<< Updated upstream
 plot(t,ETA(3,:))
+=======
+plot(t,Q)
+xlabel('time')
+ylabel('response')
+title('P1')
+>>>>>>> Stashed changes
 
 tau1 = 110;
 tau2 = 32;
