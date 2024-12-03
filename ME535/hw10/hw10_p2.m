@@ -4,24 +4,24 @@ close all
 
 syms x L rho A E I
 
-% m = (1/2) * rho * A * L;
-% k = 10 * E * I / L^3;
+m = (1/2);
+k = 10;
 
-m = 0;
-k = 0;
+% m = 0;
+% k = 0;
 
 alpha(1) = 1.8751;
 alpha(2) = 4.6941;
 alpha(3) = (2 * 3 - 1) * pi / 2;
 
-for i = 1:3
-    R(i) = -((sin(alpha(i)) + sinh(alpha(i))) / (cos(alpha(i)) + cosh(alpha(i))));
-    psi(i) = sin(alpha(i) .* x/L) - sinh(alpha(i) .* x/L) + R(i) .* (cos(alpha(i) .* x/L) - cosh(alpha(i) .* x/L));
-end
-
 % for i = 1:3
-%     psi(i) = (x/L)^(i);
+%     R(i) = -((sin(alpha(i)) + sinh(alpha(i))) / (cos(alpha(i)) + cosh(alpha(i))));
+%     psi(i) = sin(alpha(i) .* x/L) - sinh(alpha(i) .* x/L) + R(i) .* (cos(alpha(i) .* x/L) - cosh(alpha(i) .* x/L));
 % end
+
+for i = 1:3
+    psi(i) = (x/L)^(i+1);
+end
 
 for i = 1:3
     for j = 1:3
@@ -30,11 +30,17 @@ for i = 1:3
     end
 end
 
-M
-K
-
 M_num = double(subs(M,[L rho A E I],[1, 1, 1, 1, 1]));
 K_num = double(subs(K,[L rho A E I],[1, 1, 1, 1, 1]));
+
+for i = 1:3
+    for j = 1:3
+        Mp(i,j) = ((i + j + 3)^(-1) + m);
+        Kp(i,j) = (((i + 1) * i * (j + 1) * j)/(i + j - 1)) + k;
+    end
+end
+
+[vecs, vals] = eig(Kp, Mp);
 
 [vectors, values] = eig(K_num,M_num);
 

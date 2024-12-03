@@ -21,3 +21,7 @@ end
 M_num = double(subs(M,[L,rho,A0,E],[1,1,1,1]));
 K_num = double(subs(K,[L,rho,A0,E],[1,1,1,1]));
 
+[vectors, values] = eig(K_num,M_num);
+
+natural_frequencies = [sqrt(values(1,1)); sqrt(values(2,2)); sqrt(values(3,3)); sqrt(values(4,4))];
+
