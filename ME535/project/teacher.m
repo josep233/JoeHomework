@@ -234,18 +234,15 @@ for k = size(omega_c,2):-1:2;
         k
     end
 end
-% 
-% figure(1)
-% subplot(2,1,1);
-% plot(U_c.',omega_c.',U(fl_mode_ind,fl_U_ind),omega_c(fl_mode_ind,fl_U_ind),'*'); grid on;
-% ylabel('\bfFrequencies (rad/s)');
-% set(get(gca,'Children'),'LineWidth',2)
-% subplot(2,1,2);
-% plot(U_c.',zts_c.',U_c(fl_mode_ind,fl_U_ind),zts_c(fl_mode_ind,fl_U_ind),'*'); grid on;
-% xlabel('\bfSpeed (ft/s)'); ylabel('\bfDamping Ratio');
-% sdaxsetb([0,800])
-% set(get(gca,'Children'),'LineWidth',2)
-% % ylim([-0.5,1])
+
+figure(1)
+subplot(2,1,1);
+plot(U_c.',omega_c.',U(fl_mode_ind,fl_U_ind),omega_c(fl_mode_ind,fl_U_ind),'*'); grid on;
+ylabel('\bfFrequencies (rad/s)');
+set(get(gca,'Children'),'LineWidth',2)
+subplot(2,1,2);
+plot(U_c.',zts_c.',U_c(fl_mode_ind,fl_U_ind),zts_c(fl_mode_ind,fl_U_ind),'*'); grid on;
+xlabel('\bfSpeed (ft/s)'); ylabel('\bfDamping Ratio');
 
 
 

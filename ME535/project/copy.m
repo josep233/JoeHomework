@@ -42,35 +42,22 @@ end
 
 for jj=1:N
     R = (sinh(al_v(jj))+sin(al_v(jj)))/(cosh(al_v(jj))+cos(al_v(jj)));
-    PsiB(jj)=sin(al_v(jj)*y)-sinh(al_v(jj)*y)-R*(cos(al_v(jj)*y)-cosh(al_v(jj)*y));
-    PsiT(jj)=sin((2*jj-1)*pi*y/2);
+    psiB(jj)=sin(al_v(jj)*y)-sinh(al_v(jj)*y)-R*(cos(al_v(jj)*y)-cosh(al_v(jj)*y));
+    psiT(jj)=sin((2*jj-1)*pi*y/2);
     % Psi_pw(jj)=al_v(jj)*(cos(al_v(jj)*y)-cosh(al_v(jj)*y)+R*(sin(al_v(jj)*y)+sinh(al_v(jj)*y)));
 end
 
-Mb = rho * A * double(int(PsiB^2,0,1));
-Mbt = -rho * A * x * double(int(PsiB*PsiT,0,1));
-Mt = rho * A * x^2 * double(int(PsiT^2,0,1)) + Iy * double(int(PsiT^2,0,1));
-% Mt = Iy * double(int(PsiT^2,0,1)) + rho * J * double(int(PsiT^2,0,1));
+Mb = rho * A * double(int(psiB^2,0,1));
+Mbt = -rho * A * x * double(int(psiB*psiT,0,1));
+Mt = rho * A * x^2 * double(int(psiT^2,0,1)) + Iy * double(int(psiT^2,0,1));
+% Mt = Iy * double(int(psiT^2,0,1)) + rho * J * double(int(psiT^2,0,1));
 
-Kb = (E * Iea / L^4) * double(int(diff(PsiB,y,2)^2,0,1));
-Kbt = -x * (E * Iea / L^4) * double(int(diff(PsiB,y,2) * diff(PsiT,y,2),0,1));
-Kt = x^2 * (E * Iea / L^4) * double(int(diff(PsiT,y,2)^2,0,1)) + (G * J / L^2) * double(int(diff(PsiT,y,1)^2,0,1));
+Kb = (E * Iea / L^4) * double(int(diff(psiB,y,2)^2,0,1));
+Kbt = -x * (E * Iea / L^4) * double(int(diff(psiB,y,2) * diff(psiT,y,2),0,1));
+Kt = x^2 * (E * Iea / L^4) * double(int(diff(psiT,y,2)^2,0,1)) + (G * J / L^2) * double(int(diff(psiT,y,1)^2,0,1));
 
 M = [Mb,Mbt;Mbt,Mt];
 K = [Kb,Kbt;Kbt,Kt];
-
-% Zero stores
-nstores = 3;
-d = 0.2*b*[1,1,1]; % 0.2 is x_alpha or how far the CG is behind the elastic axis
-    % See p. 533 of BAH
-mstores = 0*mw*[1,1,1];  % mass of store (assumes 2 ft width)
-Istores = 0*Iy + mstores.*d.^2; % Inertia of store
-Sstores = 0*mstores.*d;     % slugs-ft/ft - Store static imbalance
-astores = 0*[1,1,1];     % ft - a_s*b_s = store CG Location relative to elastic axis
-cstores = 0*[1,1,1];    % ft - store chord (see above, length of store in wing chord direction)
-bstores = 0*cstores/2;  % ft - store chord (length)
-ystores = [20,10,15]./L;    % nondim - store position.
-swidth = 1; % Store width??
 
 % Compute Frequencies for V = 0
 disp('Frequencies for Uncoupled Bending and Torsion: [wb1,wt1]')
@@ -83,8 +70,17 @@ ks = [0.005:0.005:1,2:2:20]; lam = zeros(Ndof,length(ks)); U = lam; g = lam; ome
 for ki = 1:length(ks)
     k = ks(ki);
 
-% Aerodyamics - Theodorsen's function Lift and Moment coefficients
-% k = 1; (above)
+%theodorsen stuff
+C = besselh(1,2,k)./(besselh(1,2,k)+1i*besselh(0,2,k)); % F+i*G
+L_h = -((- k + C*2i))/k;
+L_alpha = -(b*(2*C + k*1i + C*k*1i + a*k^2 - C*a*k*2i))/k^2;
+M_h = -(b*(a*k + C*a*2i - C*1i))/k;
+M_alpha = (b^2*(8*C - k*4i - 16*C*a + C*k*4i + a*k*8i + k^2 - 8*a^2*k^2 - C*a*k*16i + C*a^2*k*16i))/(8*k^2);
+
+hstuff = pi * rho * b^2 * double(int(psiB,0,1)^2*(- k + C*2i))/k;
+
+Maero = pi * rho * b^2 * (double([L_h, L_alpha] * [-int(psiB,0,1); -x * int(psiT,0,1)]) + double([M_h, M_alpha] * [0; int(psiT,0,1)]));
+
 C = besselh(1,2,k)./(besselh(1,2,k)+i*besselh(0,2,k)); % F+i*G
 M_inf = 0;
 M_corr = 1/sqrt(1+M_inf^2);
@@ -94,39 +90,29 @@ L_h = M_corr*(1-2*i*(1/k)*C);
 M_alpha = M_corr*(3/8 - i*(1/k));
 M_h = M_corr*(1/2);
 
-Q_w = zeros(N,N); Q_wo = zeros(N,N); Q_ow = zeros(N,N); Q_o = zeros(N,N);
 for m = 1:N
     for n = 1:m
-          q_integrand = inline(strrep(strrep(strrep(char(b^2*L_h*PsiB(m)*PsiB(n)),...
+          q_integrand = inline(strrep(strrep(strrep(char(b^2*L_h*psiB(m)*psiB(n)),...
               '*','.*'),'/','./'),'^','.^'));
-          q_stores = inline(strrep(strrep(strrep(char(PsiB(m)*PsiB(n)),...
+          q_stores = inline(strrep(strrep(strrep(char(psiB(m)*psiB(n)),...
               '*','.*'),'/','./'),'^','.^'));
-        Q_w(m,n) = pi*rho*(quadl(q_integrand,0,1) + (swidth/L)*sum(L_h*bstores.^2.*q_stores(ystores)));
+        Q_w(m,n) = pi*rho*(quadl(q_integrand,0,1));
         % Note, +omega^2 multiplies each term, but the EVP below takes care of
         % this.
         
-          q_integrand = inline(strrep(strrep(strrep(char(b^3*(L_alpha-L_h*(0.5+a))*PsiB(m)*PsiT(n)),...
+          q_integrand = inline(strrep(strrep(strrep(char(b^3*(L_alpha-L_h*(0.5+a))*psiB(m)*psiT(n)),...
               '*','.*'),'/','./'),'^','.^'));
-          q_stores = inline(strrep(strrep(strrep(char(PsiB(m)*PsiT(n)),...
-              '*','.*'),'/','./'),'^','.^'));
-        Q_wo(m,n) = -pi*rho*(quadl(q_integrand,0,1) + ...
-            (swidth/L)*sum(bstores.^3.*(L_alpha-L_h*(0.5+astores)).*q_stores(ystores)));
+        Q_wo(m,n) = -pi*rho*(quadl(q_integrand,0,1));
         
-          q_integrand = inline(strrep(strrep(strrep(char(b^3*(M_h-L_h*(0.5+a))*PsiT(m)*PsiB(n)),...
+          q_integrand = inline(strrep(strrep(strrep(char(b^3*(M_h-L_h*(0.5+a))*psiT(m)*psiB(n)),...
               '*','.*'),'/','./'),'^','.^'));
-          q_stores = inline(strrep(strrep(strrep(char(PsiT(m)*PsiB(n)),...
-              '*','.*'),'/','./'),'^','.^'));
-        Q_ow(m,n) = -pi*rho*(quadl(q_integrand,0,1) + ...
-            (swidth/L)*sum(bstores.^3.*(M_h-L_h*(0.5+astores)).*q_stores(ystores)));
+        Q_ow(m,n) = -pi*rho*(quadl(q_integrand,0,1));
         
           q_integrand = inline(strrep(strrep(strrep(char(b^4*(M_alpha-(M_h+L_alpha)*(0.5+a)+L_h*(0.5+a)^2)...
-              *PsiT(m)*PsiT(n)),'*','.*'),'/','./'),'^','.^'));
-          q_stores = inline(strrep(strrep(strrep(char(PsiT(m)*PsiT(n)),...
-              '*','.*'),'/','./'),'^','.^'));
-        Q_o(m,n) = pi*rho*(quadl(q_integrand,0,1) + ...
-            (swidth/L)*sum(bstores.^4.*(M_alpha-(M_h+L_alpha)*(0.5+astores)+L_h*(0.5+astores).^2).*q_stores(ystores)));
+              *psiT(m)*psiT(n)),'*','.*'),'/','./'),'^','.^'));
+        Q_o(m,n) = pi*rho*(quadl(q_integrand,0,1));
         
-        if n ~= m;
+        if n ~= m
             Q_w(n,m) = Q_w(m,n);
             Q_wo(n,m) = Q_wo(m,n);
             Q_ow(n,m) = Q_ow(m,n);
@@ -177,7 +163,4 @@ set(get(gca,'Children'),'LineWidth',2)
 subplot(2,1,2);
 plot(U_c.',zts_c.',U_c(fl_mode_ind,fl_U_ind),zts_c(fl_mode_ind,fl_U_ind),'*'); grid on;
 xlabel('\bfSpeed (ft/s)'); ylabel('\bfDamping Ratio');
-sdaxsetb([0,800])
-set(get(gca,'Children'),'LineWidth',2)
-% ylim([-0.5,1])
 
