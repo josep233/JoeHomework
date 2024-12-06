@@ -9,7 +9,7 @@ thickness = chord * .09;
 L = 20;
 % I = (chord * thickness^3) / 12; %this is just bh^3 / 12
 I = 1.943;
-J = (chord * thickness^3 / 16) * (16 / 3 - 3.36 * thickness / chord * (1 - thickness^4 / (12 * chord^4))); %from wikipedia
+% J = (chord * thickness^3 / 16) * (16 / 3 - 3.36 * thickness / chord * (1 - thickness^4 / (12 * chord^4))); %from wikipedia
 A = thickness * chord;
 
 
@@ -35,8 +35,8 @@ beta = 0.6 * pi / L;
 Cb = 1;
 Ct = 1;
 
-% phiB = Cb * (cosh(beta * y) - 0.734 * sinh(beta * y) - cos(beta * y) + 0.734 * sin(beta * y));
-% phiT = Ct * sin((pi * y)/(2 * L));
+phiB = Cb * (cosh(beta * y) - 0.734 * sinh(beta * y) - cos(beta * y) + 0.734 * sin(beta * y));
+phiT = Ct * sin((pi * y)/(2 * L));
 
 N = 1;
 
@@ -46,15 +46,15 @@ for jj = 1:1:N;
     al_v(jj) = fzero(@(y)cos(y)+1/cosh(y),r);
 end
 
-for jj=1:N
-    R = (sinh(al_v(jj))+sin(al_v(jj)))/(cosh(al_v(jj))+cos(al_v(jj)));
-    phiB(jj)=sin(al_v(jj)*y)-sinh(al_v(jj)*y)-R*(cos(al_v(jj)*y)-cosh(al_v(jj)*y));
-    phiT(jj)=sin((2*jj-1)*pi*y/2);
-    % Psi_pw(jj)=al_v(jj)*(cos(al_v(jj)*y)-cosh(al_v(jj)*y)+R*(sin(al_v(jj)*y)+sinh(al_v(jj)*y)));
-end
+% for jj=1:N
+%     R = (sinh(al_v(jj))+sin(al_v(jj)))/(cosh(al_v(jj))+cos(al_v(jj)));
+%     phiB(jj)=sin(al_v(jj)*y)-sinh(al_v(jj)*y)-R*(cos(al_v(jj)*y)-cosh(al_v(jj)*y));
+%     phiT(jj)=sin((2*jj-1)*pi*y/2);
+%     % Psi_pw(jj)=al_v(jj)*(cos(al_v(jj)*y)-cosh(al_v(jj)*y)+R*(sin(al_v(jj)*y)+sinh(al_v(jj)*y)));
+% end
 
-M = double([int(rho * A * phiB^2,y,0,L), -x * int(rho * A * phiB * phiT,y,0,L); -x * int(rho * A * phiB * phiT,y,0,L), int(rho * A * phiT^2 + rho * J * phiT^2,y,0,L)]);
-K = double([int(E * I * diff(phiB,y,2)^2,y,0,L), -x * int(E * I * diff(phiB,y,2) * diff(phiT,y,2),y,0,L); -x * int(E * I * diff(phiB,y,2) * diff(phiT,y,2),y,0,L), int(E * I * diff(phiT,y,2)^2 + G * J * diff(phiT,y,1),y,0,L)]);
+M = double([int(rho * A / L * phiB^2,y,0,L), -x * int(rho * A / L * phiB * phiT,y,0,L); -x * int(rho * A / L * phiB * phiT,y,0,L), int(rho * A / L * phiT^2 + rho * J / L * phiT^2,y,0,L)]);
+K = double([int(E * I / L * diff(phiB,y,2)^2,y,0,L), -x * int(E * I / L * diff(phiB,y,2) * diff(phiT,y,2),y,0,L); -x * int(E * I / L * diff(phiB,y,2) * diff(phiT,y,2),y,0,L), int(E * I / L * diff(phiT,y,2)^2 + G * J / L * diff(phiT,y,1),y,0,L)]);
 
 omega_b = (3.55 / L^2) * sqrt(E * I / m);
 omega_t = (pi / (2 * L)) * sqrt(G * J / I);
