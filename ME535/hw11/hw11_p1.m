@@ -9,7 +9,7 @@ bigratio = 7.5;
 e_b = 0.4;
 dcl_dalpha = 2 * pi;
 
-Us = linspace(0,1.0,100);
+Us = linspace(0,1.2,100);
 
 for i = 1:length(Us)
 
@@ -30,7 +30,7 @@ end
 figure(1);
 subplot(2,1,1)
 hold on
-plot(Us,real(fns),'-',Us,imag(lams),'--'); grid on;
+plot(Us,real(fns)/2/pi,'-',Us,imag(lams)/2/pi,'--'); grid on;
 set(get(gca,'Children'),'LineWidth',2)
 legend('M1 Clas.','M2 Clas.','M1 SS','M2 SS');
 xlabel('Speed (m/s)'); ylabel('Mode Frequencies');

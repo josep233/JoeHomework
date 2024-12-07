@@ -15,7 +15,7 @@ x2 = 0.0087;
 m = 6.47;
 c = 0.36;
 b = c/2;
-S = 1;
+S = 1 * c;
 Ialpha = 0.0699;
 % Kalpha = 97.7;
 aerodynamic_center = 0.227 * c;
@@ -28,7 +28,7 @@ rhoair = 1.2;
 % Kh = 755;
 Kalpha = (f0_2 * 2 * pi)^2 * Ialpha;
 Kh = (f0_1 * 2 * pi)^2 * m;
-Us = linspace(20,30,100);
+Us = linspace(0,60,1000);
 subtract = zeros(2,2);
 x_alpha = xcg / b;
 S_alpha = m * x_alpha * b;
@@ -86,9 +86,9 @@ xlabel('Speed (m/s)'); ylabel('Damping Ratio');
 b=c/2; % half chord
 a=e/b; % nondimensional elastic axis 
 % Find range of k to study.
-Udes=[20,30]; % m/s
+Udes=[1,60]; % m/s
 kdes=fn0(1)*2*pi*b./Udes(2:-1:1); % use first mode frequency to find k's
-ksD=linspace(kdes(1),kdes(2),100);
+ksD=linspace(kdes(1),kdes(2),1000);
 fnsD=zeros(2,length(ksD)); lamsD=fnsD; ztsD=fnsD;
 % Structural stiffness matrices are constant
 K=[Kh,0;
