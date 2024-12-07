@@ -2,15 +2,8 @@ clear
 clc
 close all
 
-Mbactual = 1.3843;
-Mtactual = 0.9715;
-Mbtactual = -0.4128;
-Kbactual = 3.3926e3;
-Ktactual = 7.3615e3;
-
-rho = 0.002378;
-% rho = 0.0025;
-
+%given information from Goland / Dr Allen
+rho = 0.002378; %density - lbm/ft^3
 L = 20; %length of wing - ft
 c = 6; %chord - ft
 b = c/2; %half chord -ft
@@ -26,8 +19,7 @@ G = 5.616e8; %shear modulus - lb-ft^2
 Iea = 1.58e-2; %area moment of inertia of wing in bending - ft^4
 J = 4.25e-3; %area moment of inertia of wing in torsion - ft^4
 x = (center_of_gravity - elastic_center);
-
-A = mw / rho;
+A = mw / rho; %this is inferred, really.
 
 %these mode functions came from the book
 syms y real
@@ -52,7 +44,7 @@ K = [Kb,Kbt;Kbt,Kt];
 actual_uncoupled_frequencies = [1.8755^2*sqrt(E*Iea/(mw*L^4)); (pi/(2*L))*sqrt(G*J/Iy)];
 calculated_uncoupled_frequencies = sqrt(eig(K,M));
 
-% K-method - loop over various k's
+% loop over ks
 ks = [0.005:0.1:1,2:2:20]; lam = zeros(2,length(ks)); U = lam; g = lam; omega = lam;
 for ki = 1:length(ks)
     k = ks(ki);
@@ -93,7 +85,6 @@ for k = size(omega_c,2):-1:2
         U_c([1,2],k-1:-1:1) = U_c([2,1],k-1:-1:1);
     end
 end
-
 figure(1)
 subplot(2,1,1);
 plot(U_c.',omega_c.',U(fl_mode_ind,fl_U_ind),omega_c(fl_mode_ind,fl_U_ind),'*'); grid on;
