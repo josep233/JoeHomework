@@ -2,15 +2,10 @@ clear
 clc
 close all
 
-natfreq1 = csvread('natfreq1.csv');
-natfreq2 = csvread('natfreq2.csv');
-damp1 = csvread('damp1.csv');
-damp2 = csvread('damp2.csv');
+%note: a lot of this came from Dr Allen's code.
 
 f0_1 = 4.57;
 f0_2 = 5.95;
-z1 = 0.003;
-x2 = 0.0087;
 
 m = 6.47;
 c = 0.36;
@@ -68,16 +63,12 @@ figure(1);
 subplot(2,1,1)
 hold on
 plot(Us,real(fns),'-',Us,imag(lams)/2/pi,'--'); grid on;
-plot(natfreq1(:,1),natfreq1(:,2),'k:')
-plot(natfreq2(:,1),natfreq2(:,2),'k:')
 set(get(gca,'Children'),'LineWidth',2)
 legend('M1 Clas.','M2 Clas.','M1 SS','M2 SS');
 xlabel('Speed (m/s)'); ylabel('Mode Frequencies');
 subplot(2,1,2)
 hold on
 plot(Us,-real(1i*fns)./abs(fns),'-',Us,-real(lams)./abs(lams),'--'); grid on;
-plot(damp1(:,1),damp1(:,2),'k:')
-plot(damp2(:,1),damp2(:,2),'k:')
 set(get(gca,'Children'),'LineWidth',2)
 xlabel('Speed (m/s)'); ylabel('Damping Ratio');
 
@@ -123,14 +114,10 @@ figure(2);
 subplot(2,1,1);
 hold on
 plot(Um1,fnsD,Um2,fnsD); grid on;
-plot(natfreq1(:,1),natfreq1(:,2),'k:')
-plot(natfreq2(:,1),natfreq2(:,2),'k:')
 legend('M1 Flutter M1','M1 Flutter M2','M2 Flutter M1','M2 Flutter M2');
 xlabel('Speed (m/s)'); ylabel('Mode Frequencies');
 subplot(2,1,2);
 hold on
 plot(Um1,ztsD,Um2,ztsD); grid on;
-plot(damp1(:,1),damp1(:,2),'k:')
-plot(damp2(:,1),damp2(:,2),'k:')
 legend('M1 Flutter M1','M1 Flutter M2','M2 Flutter M1','M2 Flutter M2');
 xlabel('Speed (m/s)'); ylabel('Damping Ratios');

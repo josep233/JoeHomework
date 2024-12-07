@@ -19,7 +19,6 @@ for i = 1:length(Us)
 [Phi,lam]=eig(K,M);
 fn=sqrt(diag(lam));
 fns(:,i)=sort(fn);
-% Alternative, solve for state-space eigenvalues instead.
     [Phic,lamss]=polyeig(K,0*M,M);
         lkp=lamss(imag(lamss)>0); % keep only root with positive frequency
     % lams(:,i)=sort(lkp);
