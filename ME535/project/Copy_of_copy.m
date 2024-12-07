@@ -66,9 +66,9 @@ disp('Frequencies for U = 0 (rad/s)');
 wnsq_U0 = sqrt(eig(K,M))
 
 % K-method - loop over various k's
-ks = [0.005:0.005:1,2:2:20]; lam = zeros(Ndof,length(ks)); U = lam; g = lam; omega = lam;
+ks = [0.005:0.1:1,2:2:20]; lam = zeros(Ndof,length(ks)); U = lam; g = lam; omega = lam;
 for ki = 1:length(ks)
-    k = ks(ki);
+    k = ks(ki)
 
 %theodorsen stuff
 C = besselh(1,2,k)./(besselh(1,2,k)+1i*besselh(0,2,k)); % F+i*G
@@ -77,53 +77,65 @@ L_alpha = -(b*(2*C + k*1i + C*k*1i + a*k^2 - C*a*k*2i))/k^2;
 M_h = -(b*(a*k + C*a*2i - C*1i))/k;
 M_alpha = (b^2*(8*C - k*4i - 16*C*a + C*k*4i + a*k*8i + k^2 - 8*a^2*k^2 - C*a*k*16i + C*a^2*k*16i))/(8*k^2);
 
-hstuff = pi * rho * b^2 * double(int(psiB,0,1)^2*(- k + C*2i))/k;
+% Q_h = pi * rho * double(int(-b^2 * ((- k + C*2i)/k) * psiB^2,0,1));
+% Q_halpha = pi * rho * double(int(b^2 * (b*(2*C + k*1i + C*k*1i + a*k^2 - C*a*k*2i))/k^2 * psiB * psiT, 0, 1));
+% Q_alphah = pi * rho * double(int(-b^2 * ((b*(a*k + C*a*2i - C*1i))/k) * psiB * psiT,0,1));
+% Q_alpha = pi * rho * double(int(b^2 * (-(((a^2 - 1/8) - ((a - 1/2)*1i)/k) - (2*C*b*(b^(-1)*(a - 1/2)*1i - (b^(-1))/k)*(a - 1/2))/k)) * psiT^2,0,1));
 
-Maero = pi * rho * b^2 * (double([L_h, L_alpha] * [-int(psiB,0,1); -x * int(psiT,0,1)]) + double([M_h, M_alpha] * [0; int(psiT,0,1)]));
+lh = -((- k + C*2i))/k;
+la = -(b*(2*C + k*1i + C*k*1i + a*k^2 - C*a*k*2i))/k^2;
+mh = -(b*(a*k + C*a*2i - C*1i))/k ;
+ma = (b^2*(8*C - k*4i - 16*C*a + C*k*4i + a*k*8i + k^2 - 8*a^2*k^2 - C*a*k*16i + C*a^2*k*16i))/(8*k^2);
+Q_h = double(int(pi * rho * b^2 * lh * psiB^2,0,1));
+Q_halpha = double(int(-pi * rho * b^2 * la * psiB * psiT,0,1));
+Q_alphah = double(int(-pi * rho * b^2 * mh * psiT * psiB,0,1));
+Q_alpha = double(int(pi * rho * b^2 * ma * psiT^2,0,1));
 
-C = besselh(1,2,k)./(besselh(1,2,k)+i*besselh(0,2,k)); % F+i*G
-M_inf = 0;
-M_corr = 1/sqrt(1+M_inf^2);
+% C = besselh(1,2,k)./(besselh(1,2,k)+i*besselh(0,2,k)); % F+i*G
+% M_inf = 0;
+% M_corr = 1/sqrt(1+M_inf^2);
+% 
+% L_alpha = M_corr*(0.5 - i*(1/k)*(1+2*C)-2*(1/k)^2*C);
+% L_h = M_corr*(1-2*i*(1/k)*C);
+% M_alpha = M_corr*(3/8 - i*(1/k));
+% M_h = M_corr*(1/2);
+% 
+% for m = 1:N
+%     for n = 1:m
+%           q_integrand = inline(strrep(strrep(strrep(char(b^2*L_h*psiB(m)*psiB(n)),...
+%               '*','.*'),'/','./'),'^','.^'));
+%           q_stores = inline(strrep(strrep(strrep(char(psiB(m)*psiB(n)),...
+%               '*','.*'),'/','./'),'^','.^'));
+%         Q_w(m,n) = pi*rho*(quadl(q_integrand,0,1));
+%         % Note, +omega^2 multiplies each term, but the EVP below takes care of
+%         % this.
+% 
+%           q_integrand = inline(strrep(strrep(strrep(char(b^3*(L_alpha-L_h*(0.5+a))*psiB(m)*psiT(n)),...
+%               '*','.*'),'/','./'),'^','.^'));
+%         Q_wo(m,n) = -pi*rho*(quadl(q_integrand,0,1));
+% 
+%           q_integrand = inline(strrep(strrep(strrep(char(b^3*(M_h-L_h*(0.5+a))*psiT(m)*psiB(n)),...
+%               '*','.*'),'/','./'),'^','.^'));
+%         Q_ow(m,n) = -pi*rho*(quadl(q_integrand,0,1));
+% 
+%           q_integrand = inline(strrep(strrep(strrep(char(b^4*(M_alpha-(M_h+L_alpha)*(0.5+a)+L_h*(0.5+a)^2)...
+%               *psiT(m)*psiT(n)),'*','.*'),'/','./'),'^','.^'));
+%         Q_o(m,n) = pi*rho*(quadl(q_integrand,0,1));
+% 
+%         if n ~= m
+%             Q_w(n,m) = Q_w(m,n);
+%             Q_wo(n,m) = Q_wo(m,n);
+%             Q_ow(n,m) = Q_ow(m,n);
+%             Q_o(n,m) = Q_o(m,n);
+%         end
+%     end
+% end
 
-L_alpha = M_corr*(0.5 - i*(1/k)*(1+2*C)-2*(1/k)^2*C);
-L_h = M_corr*(1-2*i*(1/k)*C);
-M_alpha = M_corr*(3/8 - i*(1/k));
-M_h = M_corr*(1/2);
 
-for m = 1:N
-    for n = 1:m
-          q_integrand = inline(strrep(strrep(strrep(char(b^2*L_h*psiB(m)*psiB(n)),...
-              '*','.*'),'/','./'),'^','.^'));
-          q_stores = inline(strrep(strrep(strrep(char(psiB(m)*psiB(n)),...
-              '*','.*'),'/','./'),'^','.^'));
-        Q_w(m,n) = pi*rho*(quadl(q_integrand,0,1));
-        % Note, +omega^2 multiplies each term, but the EVP below takes care of
-        % this.
-        
-          q_integrand = inline(strrep(strrep(strrep(char(b^3*(L_alpha-L_h*(0.5+a))*psiB(m)*psiT(n)),...
-              '*','.*'),'/','./'),'^','.^'));
-        Q_wo(m,n) = -pi*rho*(quadl(q_integrand,0,1));
-        
-          q_integrand = inline(strrep(strrep(strrep(char(b^3*(M_h-L_h*(0.5+a))*psiT(m)*psiB(n)),...
-              '*','.*'),'/','./'),'^','.^'));
-        Q_ow(m,n) = -pi*rho*(quadl(q_integrand,0,1));
-        
-          q_integrand = inline(strrep(strrep(strrep(char(b^4*(M_alpha-(M_h+L_alpha)*(0.5+a)+L_h*(0.5+a)^2)...
-              *psiT(m)*psiT(n)),'*','.*'),'/','./'),'^','.^'));
-        Q_o(m,n) = pi*rho*(quadl(q_integrand,0,1));
-        
-        if n ~= m
-            Q_w(n,m) = Q_w(m,n);
-            Q_wo(n,m) = Q_wo(m,n);
-            Q_ow(n,m) = Q_ow(m,n);
-            Q_o(n,m) = Q_o(m,n);
-        end
-    end
-end
 
 % Assemble
-Q = [Q_w, Q_wo;
-    Q_ow, Q_o];
+Q = [Q_h, Q_halpha;
+    Q_alphah, Q_alpha];
 
 [Phi,Lam] = eig(K,(M+Q));
 % V-g method
@@ -133,7 +145,7 @@ Q = [Q_w, Q_wo;
     U(:,ki) = omega(:,ki)*b/k;
 end
 
-
+disp("here")
 % Plots
 
 % Find Flutter Point:

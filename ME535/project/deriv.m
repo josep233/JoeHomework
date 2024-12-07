@@ -9,10 +9,10 @@ Leq=-pi*rho*b^2*(-w^2*h+1i*w*U*al+b*a*w^2*al)...
 Leq_h = simplify(subs(Leq,al,0));
 Leq_al = simplify(subs(Leq,h,0));
 
-% Leq_adj = [-psiB, -x*psiT] * [Leq_h; Leq_al];
-Leq_adj = -psiB * Leq_h - x * psiT * Leq_al;
+Leq_adj = [-psiB, -x*psiT] * [Leq_h; Leq_al];
+% Leq_adj = -psiB * Leq_h - x * psiT * Leq_al;
 
-Leq = Leq_adj;
+% Leq = Leq_adj;
 
 % pretty(Leq)
 Leq=subs(Leq,U,b*w/k);
@@ -28,16 +28,19 @@ Meq=pi*rho*b^2*(-b*a*w^2*h-1i*w*U*b*(0.5-a)*al+b^2*(1/8-a^2)*w^2*al)+...
 Meq_h = simplify(subs(Meq,al,0));
 Meq_al = simplify(subs(Meq,h,0));
 
-% Meq_adj = [0, psiT] * [Meq_h; Meq_al];
-Meq_adj = Meq_al * psiT;
+Meq_adj = [0, psiT] * [Meq_h; Meq_al];
+% Meq_adj = Meq_al * psiT;
 
-Meq = Meq_adj;
+% Meq = Meq_adj;
 
 Meq=subs(Meq,U,b*w/k);
 Meq=simplify(Meq/w^2); % all terms need omega^2
 Meq=simplify(Meq/(pi*rho*b^2)); % all terms need pi*rho*b^2
 Mh=simplify(subs(Meq,al,0));
 Mal=simplify(subs(Meq,h,0))
-    simplify(Mal,'All',true)
+    % simplify(Mal,'All',true)
 
-Lh
+% Lal
+% Lh
+% Mh
+% Mal
