@@ -92,8 +92,8 @@ for kk=1:length(ksD);
     C = besselh(1,2,k)./(besselh(1,2,k)+1i*besselh(0,2,k)); % F+i*G
     Lh = -((- k + C*2i))/k;
     Lal = -(b*(2*C + k*1i + C*k*1i + a*k^2 - C*a*k*2i))/k^2;
-    Mh = -(b*(a*k + C*a*2i - C*1i))/k;
-    Mal = (b^2*(8*C - k*4i - 16*C*a + C*k*4i + a*k*8i + k^2 - 8*a^2*k^2 - C*a*k*16i + C*a^2*k*16i))/(8*k^2);
+    Mh = (b*(- a*k + C*1i + C*a*2i))/k; 
+    Mal = (b^2*(8*C - k*4i + 16*C*a + C*k*4i + a*k*8i + k^2 - 8*a^2*k^2 - C*a^2*k*16i))/(8*k^2);
     Maero=pi*rhoair*b^2*[Lh,Lal; Mh,Mal];
     
     % Solve for state-space eigenvalues
